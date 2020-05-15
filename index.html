@@ -35,26 +35,30 @@
                 </div>
                 <div class="list-group mb-5" id="search-history">
                     <button type="button" class="list-group-item list-group-item-action active">
-                        Shanghai
+                        Sedona
                     </button>
-                    <button type="button" class="list-group-item list-group-item-action">Tokyo</button>
-                    <button type="button" class="list-group-item list-group-item-action">London</button>
-                    <button type="button" class="list-group-item list-group-item-action">Toronto</button>
-                    <button type="button" class="list-group-item list-group-item-action">Madrid</button>
                 </div>
             </aside>
+            <!--jumbotron-->
             <div class="col-md-8">
                 <div class="row">
                     <div class="col-12">
                         <div class="jumbotron">
-                            <h2>Shanghai</h2>
+                            <h2 id="city-name"></h2>
+                            <ul class="list-unstyled">
+                                <li id="temp"> </li>
+                                <li id="humidity"> </li>
+                                <li id="wind-speed"> </li>
+                                <li id="uv-index">UV Index: <span class="badge badge-danger">9.49</span></li>
+                                <ul>
                         </div>
                     </div>
                 </div>
+                <!--week forecast-->
                 <h3>5 day forecast</h3>
                 <div class="row d-flex justify-content-between px-3">
                     <div class="w-20">
-                        <div class="card">
+                        <div class="card bg-primary text-white">
                             <div class="card-body">
                                 <h5 class="card-title">Special title treatment</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional
@@ -63,7 +67,7 @@
                         </div>
                     </div>
                     <div class="w-20">
-                        <div class="card">
+                        <div class="card bg-primary text-white">
                             <div class="card-body">
                                 <h5 class="card-title">Special title treatment</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional
@@ -72,7 +76,7 @@
                         </div>
                     </div>
                     <div class="w-20">
-                        <div class="card">
+                        <div class="card bg-primary text-white">
                             <div class="card-body">
                                 <h5 class="card-title">Special title treatment</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional
@@ -81,7 +85,7 @@
                         </div>
                     </div>
                     <div class="w-20">
-                        <div class="card">
+                        <div class="card bg-primary text-white">
                             <div class="card-body">
                                 <h5 class="card-title">Special title treatment</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional
@@ -90,7 +94,7 @@
                         </div>
                     </div>
                     <div class="w-20">
-                        <div class="card">
+                        <div class="card bg-primary text-white">
                             <div class="card-body">
                                 <h5 class="card-title">Special title treatment</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional
@@ -106,14 +110,17 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
         integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
         crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+    <!--moment.js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.3/moment.min.js"></script>
     <!--My Script-->
-    <source src="./script.js">
+    <script src="./script.js"></script>
 </body>
 
 </html>
