@@ -6,21 +6,56 @@ const units = "imperial";
 const apiKey = "59cf0d27eea117f08fb58b5f7644dbcd";
 $(document).ready(function () {
     listOfCities = [];
-    searchTodaysForecast('sedona');
-    searchFiveDayForecast('sedona');
-    $('#search-button').click(function () {
+    loadWeatherDashboard();
+    $('#search-button').on('click', function () {
         cityName = $('#search-city').val();
+        $('#search-city').val('');
         searchTodaysForecast(cityName);
         searchFiveDayForecast(cityName);
     })
 });
+function loadWeatherDashboard() {
+    if (typeof (Storage) !== "undefined") {
+        if (localStorage.listOfCities) {
+            listOfCities = JSON.parse(localStorage.listOfCities);
+            listOfCities.forEach(function (city) {
+                var cityButtonHtml = '<button type="button" id="' + city + '" class="list-group-item list-group-item-action">' + city + ' </button>';
+                $('#search-history').append(cityButtonHtml);
+                $('#' + city).on('click', function () {
+                    searchTodaysForecast(city);
+                    searchFiveDayForecast(city);
+                });
+            });
+            searchTodaysForecast(listOfCities[listOfCities.length-1]);
+            searchFiveDayForecast(listOfCities[listOfCities.length-1]);
+        } else {
+            searchTodaysForecast('sedona');
+            searchFiveDayForecast('sedona');
+        }
+    }
+}
 function saveToStorage(city) {
+    var cityButtonHtml = '<button type="button" id="' + city + '" class="list-group-item list-group-item-action">' + city + ' </button>';
     if (typeof (Storage) !== "undefined") {
         if (localStorage.listOfCities) {
             var savedCities = JSON.parse(localStorage.listOfCities);
-            savedCities.push(city);
-            localStorage.listOfCities = JSON.stringify(savedCities);
+            if (!savedCities.includes(city)) {
+                $('#search-history').append(cityButtonHtml);
+                $('#' + city).on('click', function () {
+                    searchTodaysForecast(city);
+                    searchFiveDayForecast(city);
+                });
+                listOfCities.push(city);
+                savedCities.push(city);
+                localStorage.listOfCities = JSON.stringify(savedCities);
+            }
+
         } else {
+            $('#search-history').append(cityButtonHtml);
+            $('#' + city).on('click', function () {
+                searchTodaysForecast(city);
+                searchFiveDayForecast(city);
+            });
             listOfCities.push(city);
             localStorage.listOfCities = JSON.stringify(listOfCities);
         }
