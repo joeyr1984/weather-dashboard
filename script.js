@@ -2,6 +2,7 @@ var cityName, todaysForecast, listOfCities, dayOne, dayTw0, dayThree, dayFour, d
 
 const fiveDayForecastApiUrl = "https://api.openweathermap.org/data/2.5/forecast?q=";
 const currentWeatherForecastApiUrl = "https://api.openweathermap.org/data/2.5/weather?q=";
+const uvIndexApi = "http://api.openweathermap.org/data/2.5/uvi?";
 const units = "imperial";
 const apiKey = "59cf0d27eea117f08fb58b5f7644dbcd";
 $(document).ready(function () {
@@ -10,6 +11,8 @@ $(document).ready(function () {
     $('#search-button').on('click', function () {
         cityName = $('#search-city').val();
         $('#search-city').val('');
+        $('#uv-index').removeClass();
+        $('#uv-index').addClass('badge');
         searchTodaysForecast(cityName);
         searchFiveDayForecast(cityName);
     })
@@ -22,12 +25,14 @@ function loadWeatherDashboard() {
                 var cityButtonHtml = '<button type="button" id="' + city + '" class="list-group-item list-group-item-action">' + city + ' </button>';
                 $('#search-history').append(cityButtonHtml);
                 $('#' + city).on('click', function () {
+                    $('#uv-index').removeClass();
+                    $('#uv-index').addClass('badge');
                     searchTodaysForecast(city);
                     searchFiveDayForecast(city);
                 });
             });
-            searchTodaysForecast(listOfCities[listOfCities.length-1]);
-            searchFiveDayForecast(listOfCities[listOfCities.length-1]);
+            searchTodaysForecast(listOfCities[listOfCities.length - 1]);
+            searchFiveDayForecast(listOfCities[listOfCities.length - 1]);
         } else {
             searchTodaysForecast('sedona');
             searchFiveDayForecast('sedona');
@@ -42,6 +47,8 @@ function saveToStorage(city) {
             if (!savedCities.includes(city)) {
                 $('#search-history').append(cityButtonHtml);
                 $('#' + city).on('click', function () {
+                    $('#uv-index').removeClass();
+                    $('#uv-index').addClass('badge');
                     searchTodaysForecast(city);
                     searchFiveDayForecast(city);
                 });
@@ -53,6 +60,8 @@ function saveToStorage(city) {
         } else {
             $('#search-history').append(cityButtonHtml);
             $('#' + city).on('click', function () {
+                $('#uv-index').removeClass();
+                $('#uv-index').addClass('badge');
                 searchTodaysForecast(city);
                 searchFiveDayForecast(city);
             });
@@ -66,12 +75,28 @@ function searchTodaysForecast(cityName) {
         url: currentWeatherForecastApiUrl + cityName + '&units=' + units + '&appid=' + apiKey,
         method: 'GET'
     }).then(function (response) {
-        console.log(response);
+        //console.log(response);
         saveToStorage(cityName);
         updateTodaysForecast(response);
-
-    });
+        getUvIndex(response.coord.lat, response.coord.lon);
+    }).catch(error => alert(error.responseJSON.message));
 }
+function getUvIndex(lat, lon) {
+    $.ajax({
+        url: uvIndexApi + 'appid=' + apiKey + '&lat=' + lat + '&lon=' + lon,
+        method: 'GET'
+    }).then(function (response) {
+        $('#uv-index').text(response.value);
+        if ((response.value >= 0) && response.value < 3) {
+            $('#uv-index').addClass('badge-success');
+        } else if ((response.value >= 3) && response.value < 8) {
+            $('#uv-index').addClass('badge-warning');
+        } else if (response.value >= 8) {
+            $('#uv-index').addClass('badge-danger');
+        }
+    }).catch(error => alert(error.responseJSON.message));
+}
+
 function searchFiveDayForecast(cityName) {
     $.ajax({
         url: fiveDayForecastApiUrl + cityName + '&units=' + units + '&appid=' + apiKey,
@@ -84,10 +109,10 @@ function searchFiveDayForecast(cityName) {
         dayFour = response.list[27];
         dayFive = response.list[35];
         updateFiveDayForecast(dayOne, dayTwo, dayThree, dayFour, dayFive);
-    });
+    }).catch(error => console.log(error));
 }
 function updateTodaysForecast(weather) {
-    console.log(weather);
+    //console.log(weather);
     $('#city-name').html(weather.name + ' (' + moment(new Date(weather.dt * 1000)).format('MM/DD/YYYY') + ') <img src="http://openweathermap.org/img/wn/' + weather.weather[0].icon + '.png" alt="' + weather.weather[0].description + '" />');
     $('#temp').html('Temperature: ' + weather.main.temp + ' °F');
     $('#humidity').html('Humidity: ' + weather.main.humidity + ' %');
