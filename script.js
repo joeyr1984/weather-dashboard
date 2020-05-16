@@ -1,23 +1,41 @@
-var cityName, todaysForecast, dayOne, dayTw0, dayThree, dayFour, dayFive;
+var cityName, todaysForecast, listOfCities, dayOne, dayTw0, dayThree, dayFour, dayFive;
 
 const fiveDayForecastApiUrl = "https://api.openweathermap.org/data/2.5/forecast?q=";
 const currentWeatherForecastApiUrl = "https://api.openweathermap.org/data/2.5/weather?q=";
 const units = "imperial";
 const apiKey = "59cf0d27eea117f08fb58b5f7644dbcd";
 $(document).ready(function () {
-   searchTodaysForecast('sedona');
-   searchFiveDayForecast('sedona');
+    listOfCities = [];
+    searchTodaysForecast('sedona');
+    searchFiveDayForecast('sedona');
+    $('#search-button').click(function () {
+        cityName = $('#search-city').val();
+        searchTodaysForecast(cityName);
+        searchFiveDayForecast(cityName);
+    })
 });
+function saveToStorage(city) {
+    if (typeof (Storage) !== "undefined") {
+        if (localStorage.listOfCities) {
+            var savedCities = JSON.parse(localStorage.listOfCities);
+            savedCities.push(city);
+            localStorage.listOfCities = JSON.stringify(savedCities);
+        } else {
+            listOfCities.push(city);
+            localStorage.listOfCities = JSON.stringify(listOfCities);
+        }
+    }
+}
 function searchTodaysForecast(cityName) {
     $.ajax({
         url: currentWeatherForecastApiUrl + cityName + '&units=' + units + '&appid=' + apiKey,
         method: 'GET'
     }).then(function (response) {
         console.log(response);
-        
+        saveToStorage(cityName);
         updateTodaysForecast(response);
-        
-    });   
+
+    });
 }
 function searchFiveDayForecast(cityName) {
     $.ajax({
@@ -35,7 +53,7 @@ function searchFiveDayForecast(cityName) {
 }
 function updateTodaysForecast(weather) {
     console.log(weather);
-    $('#city-name').html(weather.name + ' (' + moment(new Date(weather.dt * 1000)).format('MM/DD/YYYY') + ') <img src="http://openweathermap.org/img/wn/' + weather.weather[0].icon + '.png"/>');
+    $('#city-name').html(weather.name + ' (' + moment(new Date(weather.dt * 1000)).format('MM/DD/YYYY') + ') <img src="http://openweathermap.org/img/wn/' + weather.weather[0].icon + '.png" alt="' + weather.weather[0].description + '" />');
     $('#temp').html('Temperature: ' + weather.main.temp + ' °F');
     $('#humidity').html('Humidity: ' + weather.main.humidity + ' %');
     $('#wind-speed').html('Wind Speed: ' + weather.wind.speed + ' MPH');
@@ -44,7 +62,7 @@ function updateFiveDayForecast(one, two, three, four, five) {
     //DAY ONE FORECAST
     $('#day-one-date').text(moment(new Date(one.dt * 1000)).format('MM/DD/YYYY'));
     $('#day-one-icon').attr({
-        src: 'http://openweathermap.org/img/wn/' + one.weather[0].icon + '.png', 
+        src: 'http://openweathermap.org/img/wn/' + one.weather[0].icon + '.png',
         alt: one.weather[0].description
     })
     $('#day-one-temp').text('Temp: ' + one.main.temp + ' °F');
@@ -52,7 +70,7 @@ function updateFiveDayForecast(one, two, three, four, five) {
     //DAY TWO FORECAST
     $('#day-two-date').text(moment(new Date(two.dt * 1000)).format('MM/DD/YYYY'));
     $('#day-two-icon').attr({
-        src: 'http://openweathermap.org/img/wn/' + two.weather[0].icon + '.png', 
+        src: 'http://openweathermap.org/img/wn/' + two.weather[0].icon + '.png',
         alt: two.weather[0].description
     })
     $('#day-two-temp').text('Temp: ' + two.main.temp + ' °F');
@@ -60,7 +78,7 @@ function updateFiveDayForecast(one, two, three, four, five) {
     //DAY THREE FORECAST
     $('#day-three-date').text(moment(new Date(three.dt * 1000)).format('MM/DD/YYYY'));
     $('#day-three-icon').attr({
-        src: 'http://openweathermap.org/img/wn/' + three.weather[0].icon + '.png', 
+        src: 'http://openweathermap.org/img/wn/' + three.weather[0].icon + '.png',
         alt: three.weather[0].description
     })
     $('#day-three-temp').text('Temp: ' + three.main.temp + ' °F');
@@ -68,7 +86,7 @@ function updateFiveDayForecast(one, two, three, four, five) {
     //DAY FOUR FORECAST
     $('#day-four-date').text(moment(new Date(four.dt * 1000)).format('MM/DD/YYYY'));
     $('#day-four-icon').attr({
-        src: 'http://openweathermap.org/img/wn/' + four.weather[0].icon + '.png', 
+        src: 'http://openweathermap.org/img/wn/' + four.weather[0].icon + '.png',
         alt: four.weather[0].description
     })
     $('#day-four-temp').text('Temp: ' + four.main.temp + ' °F');
@@ -76,7 +94,7 @@ function updateFiveDayForecast(one, two, three, four, five) {
     //DAY FIVE FORECST
     $('#day-five-date').text(moment(new Date(five.dt * 1000)).format('MM/DD/YYYY'));
     $('#day-five-icon').attr({
-        src: 'http://openweathermap.org/img/wn/' + five.weather[0].icon + '.png', 
+        src: 'http://openweathermap.org/img/wn/' + five.weather[0].icon + '.png',
         alt: five.weather[0].description
     })
     $('#day-five-temp').text('Temp: ' + five.main.temp + ' °F');
